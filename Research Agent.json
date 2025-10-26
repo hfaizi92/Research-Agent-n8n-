@@ -1,0 +1,147 @@
+{
+  "name": "Research Agent",
+  "nodes": [
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        0,
+        0
+      ],
+      "id": "cb496789-5740-4aa6-882d-32880d4c86a2",
+      "name": "When chat message received",
+      "webhookId": "51cfe49b-3d46-4b35-a6c6-015faf34c519"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        80,
+        208
+      ],
+      "id": "d4338231-8676-44d7-9bc1-9e8517d93cdf",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "kReqjlrOoWtQHViS",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        224,
+        208
+      ],
+      "id": "ce5bd227-3469-434b-94bf-fecbd383cb9e",
+      "name": "Simple Memory"
+    },
+    {
+      "parameters": {
+        "query": "={{ $json.chatInput }}",
+        "options": {
+          "topic": "general",
+          "max_results": 3,
+          "time_range": "month",
+          "include_raw_content": true
+        }
+      },
+      "type": "@tavily/n8n-nodes-tavily.tavilyTool",
+      "typeVersion": 1,
+      "position": [
+        544,
+        208
+      ],
+      "id": "bac63436-ab2a-43b6-bb30-dadab5605fd9",
+      "name": "Search in Tavily",
+      "credentials": {
+        "tavilyApi": {
+          "id": "mwZC5zVOolAg55VD",
+          "name": "Tavily account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {
+          "systemMessage": "Role: You are an expert Online Research Assistant capable of researching any topic in depth using real-time web data.\n\nTask: When a user gives a query, perform deep, accurate, and up-to-date research. Analyze multiple credible sources, summarize key insights, and deliver a clear, factual, and useful response.\n\nGuidelines:\n\nAlways prioritize accuracy and relevance.\n\nCite or mention credible sources when possible.\n\nWrite in a professional yet simple tone.\n\nIf information is uncertain, clearly say so.\n\nProvide structured results — short summary, key points, and conclusion.\n\nGoal: Help the user quickly understand complex topics through verified and well-organized research."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.2,
+      "position": [
+        208,
+        0
+      ],
+      "id": "65cdaeaf-9ef8-45fd-9fda-3bba54a5da14",
+      "name": "AI Agent"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Search in Tavily": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "a584a2a0-a25e-4560-9d77-419591f2cb3d",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "40998a901a985813ec9508b3516f6780bf236e196360098f3c4df43acad88a9f"
+  },
+  "id": "G06MUjzUHg7b53FQ",
+  "tags": []
+}
